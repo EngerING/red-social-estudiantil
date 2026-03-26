@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect | Iniciar sesión</title>
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="brand-circle">🎓</div>
+      <h1>CampusConnect</h1>
+      <p class="subtitle">Accede a tu red social estudiantil</p>
+
+      <form id="loginForm" class="auth-form">
+        <label for="loginEmail">Correo institucional o personal</label>
+        <input type="email" id="loginEmail" placeholder="ejemplo@correo.com" required />
+
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required />
+
+        <button type="submit" class="primary-btn">Iniciar sesión</button>
+
+        <p id="loginMessage" class="message"></p>
+      </form>
+
+      <div class="auth-footer">
+        <span>¿No tienes cuenta?</span>
+        <a href="register.html">Crear cuenta</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

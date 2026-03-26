@@ -1,0 +1,273 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #2d2d2d;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.app-shell {
+  min-height: calc(100vh - 48px);
+  background: #efefef;
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+}
+
+.sidebar {
+  background: #efefef;
+  padding: 30px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.brand-section {
+  text-align: center;
+}
+
+.brand-icon {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #4356bf;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+}
+
+.brand-section h1 {
+  font-size: 22px;
+  color: #111;
+  font-weight: bold;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.menu-btn,
+.logout-btn {
+  background: #4356bf;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 16px 18px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.menu-btn:hover,
+.logout-btn:hover,
+.chat-btn:hover {
+  background: #3447af;
+}
+
+.menu-btn.active {
+  box-shadow: 0 6px 16px rgba(67, 86, 191, 0.25);
+}
+
+.sidebar-footer {
+  margin-top: 30px;
+}
+
+.content {
+  padding: 28px 34px;
+  overflow-y: auto;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: normal;
+  color: #111;
+  margin-bottom: 16px;
+}
+
+.cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.mini-card,
+.wide-card,
+.profile-card,
+.message-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.mini-card h3,
+.wide-card h3,
+.message-card h3,
+.profile-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #111;
+}
+
+.mini-card p,
+.wide-card p,
+.message-card p,
+.profile-card p,
+.profile-card li {
+  color: #8a8a8a;
+  font-size: 15px;
+}
+
+.groups-section,
+.profile-section,
+.messages-section {
+  margin-top: 14px;
+  margin-bottom: 28px;
+}
+
+.chips-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.chip {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #4356bf;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.profile-header {
+  margin-bottom: 20px;
+}
+
+.profile-block {
+  margin-top: 18px;
+}
+
+.profile-block h4 {
+  font-size: 17px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.profile-block ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.profile-block li {
+  margin-bottom: 6px;
+}
+
+.message-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-btn {
+  background: #4356bf;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .cards-row {
+    grid-template-columns: 1fr;
+  }
+}
+.create-post-card,
+.post-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 18px;
+}
+
+.create-post-card h3,
+.post-card h3 {
+  margin-bottom: 10px;
+  color: #111;
+}
+
+#postContenido {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  padding: 14px;
+  resize: vertical;
+  font-size: 15px;
+  outline: none;
+  margin-top: 10px;
+  background: #fff;
+}
+
+.post-btn {
+  margin-top: 14px;
+  background: #4356bf;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.post-btn:hover {
+  background: #3447af;
+}
+
+.post-message {
+  margin-top: 10px;
+  color: #666;
+}
+
+.posts-section {
+  margin-top: 10px;
+}
+
+.post-meta {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+}

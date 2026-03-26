@@ -6,3 +6,6 @@ obj/
 *.cache
 node_modules/
 appsettings.Development.json
+red-social-api/Firebase/firebase-key.json
+red-social-api/Firebase/*.json
+**/*firebase-adminsdk*.json
