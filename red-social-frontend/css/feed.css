@@ -271,3 +271,78 @@ body {
   color: #888;
   margin-bottom: 8px;
 }
+.post-actions {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.like-btn,
+.comment-btn {
+  background: #4356bf;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.like-btn:hover,
+.comment-btn:hover {
+  background: #3447af;
+}
+
+.likes-count {
+  font-size: 14px;
+  color: #666;
+}
+
+.comment-box {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-input {
+  width: 100%;
+  border: 1px solid #d8d8d8;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 14px;
+}
+
+.comments-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-item {
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.comment-item strong {
+  color: #111;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.no-comments {
+  color: #888;
+  font-size: 14px;
+}
