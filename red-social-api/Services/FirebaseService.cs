@@ -151,60 +151,252 @@ namespace RedSocialApi.Services
             };
         }
 
-        public async Task<bool> CrearPostAsync(PostCrearDto dto)
+       public async Task<bool> CrearPostAsync(PostCrearDto dto)
+{
+    var perfil = await ObtenerPerfilAsync(dto.UserId);
+
+    if (perfil is null)
+    {
+        return false;
+    }
+
+    var post = new Dictionary<string, object>
+    {
+        { "userId", dto.UserId },
+        { "nombre", perfil.Nombre },
+        { "apellido", perfil.Apellido },
+        { "contenido", dto.Contenido },
+        { "fechaCreacion", Timestamp.GetCurrentTimestamp() },
+        { "likesCount", 0 }
+    };
+
+    await _firestore.Collection("posts").AddAsync(post);
+
+    return true;
+}
+
+       public async Task<List<PostDto>> ObtenerPostsAsync()
+{
+    var snapshot = await _firestore.Collection("posts")
+        .OrderByDescending("fechaCreacion")
+        .GetSnapshotAsync();
+
+    var posts = new List<PostDto>();
+
+    foreach (var document in snapshot.Documents)
+    {
+        var data = document.ToDictionary();
+
+        string fechaTexto = string.Empty;
+
+        if (data.ContainsKey("fechaCreacion") && data["fechaCreacion"] is Timestamp timestamp)
         {
-            var perfil = await ObtenerPerfilAsync(dto.UserId);
-
-            if (perfil is null)
-            {
-                return false;
-            }
-
-            var post = new Dictionary<string, object>
-            {
-                { "userId", dto.UserId },
-                { "nombre", perfil.Nombre },
-                { "apellido", perfil.Apellido },
-                { "contenido", dto.Contenido },
-                { "fechaCreacion", Timestamp.GetCurrentTimestamp() }
-            };
-
-            await _firestore.Collection("posts").AddAsync(post);
-
-            return true;
+            fechaTexto = timestamp.ToDateTime().ToString("yyyy-MM-dd HH:mm");
         }
 
-        public async Task<List<PostDto>> ObtenerPostsAsync()
+        int likesCount = 0;
+        if (data.ContainsKey("likesCount") && int.TryParse(data["likesCount"]?.ToString(), out var parsedLikes))
         {
-            var snapshot = await _firestore.Collection("posts")
-                .OrderByDescending("fechaCreacion")
-                .GetSnapshotAsync();
+            likesCount = parsedLikes;
+        }
 
-            var posts = new List<PostDto>();
+        posts.Add(new PostDto
+        {
+            Id = document.Id,
+            UserId = data.ContainsKey("userId") ? data["userId"]?.ToString() ?? string.Empty : string.Empty,
+            Nombre = data.ContainsKey("nombre") ? data["nombre"]?.ToString() ?? string.Empty : string.Empty,
+            Apellido = data.ContainsKey("apellido") ? data["apellido"]?.ToString() ?? string.Empty : string.Empty,
+            Contenido = data.ContainsKey("contenido") ? data["contenido"]?.ToString() ?? string.Empty : string.Empty,
+            FechaCreacion = fechaTexto,
+            LikesCount = likesCount
+        });
+    }
 
-            foreach (var document in snapshot.Documents)
+    return posts;
+}
+public async Task<bool> DarLikeAsync(LikeCrearDto dto)
+{
+    var postRef = _firestore.Collection("posts").Document(dto.PostId);
+    var postSnapshot = await postRef.GetSnapshotAsync();
+
+    if (!postSnapshot.Exists)
+    {
+        return false;
+    }
+
+    var likesSnapshot = await _firestore.Collection("likes")
+        .WhereEqualTo("postId", dto.PostId)
+        .WhereEqualTo("userId", dto.UserId)
+        .GetSnapshotAsync();
+
+    if (likesSnapshot.Documents.Count > 0)
+    {
+        return true;
+    }
+
+    var like = new Dictionary<string, object>
+    {
+        { "postId", dto.PostId },
+        { "userId", dto.UserId },
+        { "fechaCreacion", Timestamp.GetCurrentTimestamp() }
+    };
+
+    await _firestore.Collection("likes").AddAsync(like);
+
+    int likesCount = 0;
+    var postData = postSnapshot.ToDictionary();
+
+    if (postData.ContainsKey("likesCount") && int.TryParse(postData["likesCount"]?.ToString(), out var parsedLikes))
+    {
+        likesCount = parsedLikes;
+    }
+
+    await postRef.UpdateAsync("likesCount", likesCount + 1);
+
+    return true;
+}
+public async Task<bool> CrearComentarioAsync(ComentarioCrearDto dto)
+{
+    var perfil = await ObtenerPerfilAsync(dto.UserId);
+
+    if (perfil is null)
+    {
+        return false;
+    }
+
+    var postRef = _firestore.Collection("posts").Document(dto.PostId);
+    var postSnapshot = await postRef.GetSnapshotAsync();
+
+    if (!postSnapshot.Exists)
+    {
+        return false;
+    }
+
+    var comentario = new Dictionary<string, object>
+    {
+        { "postId", dto.PostId },
+        { "userId", dto.UserId },
+        { "nombre", perfil.Nombre },
+        { "apellido", perfil.Apellido },
+        { "contenido", dto.Contenido },
+        { "fechaCreacion", Timestamp.GetCurrentTimestamp() }
+    };
+
+    await _firestore.Collection("comentarios").AddAsync(comentario);
+
+    return true;
+}
+public async Task<List<ComentarioDto>> ObtenerComentariosPorPostAsync(string postId)
+{
+    var snapshot = await _firestore.Collection("comentarios")
+        .WhereEqualTo("postId", postId)
+        .GetSnapshotAsync();
+
+    var comentarios = new List<ComentarioDto>();
+
+    foreach (var document in snapshot.Documents)
+    {
+        var data = document.ToDictionary();
+
+        DateTime fecha = DateTime.MinValue;
+        string fechaTexto = string.Empty;
+
+        if (data.ContainsKey("fechaCreacion") && data["fechaCreacion"] is Timestamp timestamp)
+        {
+            fecha = timestamp.ToDateTime();
+            fechaTexto = fecha.ToString("yyyy-MM-dd HH:mm");
+        }
+
+        comentarios.Add(new ComentarioDto
+        {
+            Id = document.Id,
+            PostId = data.ContainsKey("postId") ? data["postId"]?.ToString() ?? string.Empty : string.Empty,
+            UserId = data.ContainsKey("userId") ? data["userId"]?.ToString() ?? string.Empty : string.Empty,
+            Nombre = data.ContainsKey("nombre") ? data["nombre"]?.ToString() ?? string.Empty : string.Empty,
+            Apellido = data.ContainsKey("apellido") ? data["apellido"]?.ToString() ?? string.Empty : string.Empty,
+            Contenido = data.ContainsKey("contenido") ? data["contenido"]?.ToString() ?? string.Empty : string.Empty,
+            FechaCreacion = fechaTexto
+        });
+    }
+
+    return comentarios
+        .OrderBy(c => DateTime.TryParse(c.FechaCreacion, out var f) ? f : DateTime.MinValue)
+        .ToList();
+}
+public async Task<bool> ToggleLikeAsync(ToggleLikeDto dto)
+{
+    var postRef = _firestore.Collection("posts").Document(dto.PostId);
+    var postSnapshot = await postRef.GetSnapshotAsync();
+
+    if (!postSnapshot.Exists)
+    {
+        return false;
+    }
+
+    var likesSnapshot = await _firestore.Collection("likes")
+        .WhereEqualTo("postId", dto.PostId)
+        .WhereEqualTo("userId", dto.UserId)
+        .GetSnapshotAsync();
+
+    var postData = postSnapshot.ToDictionary();
+    int likesCount = 0;
+
+    if (postData.ContainsKey("likesCount") &&
+        int.TryParse(postData["likesCount"]?.ToString(), out var parsedLikes))
+    {
+        likesCount = parsedLikes;
+    }
+
+    if (likesSnapshot.Documents.Count > 0)
+    {
+        foreach (var likeDoc in likesSnapshot.Documents)
+        {
+            await likeDoc.Reference.DeleteAsync();
+        }
+
+        likesCount = Math.Max(0, likesCount - 1);
+        await postRef.UpdateAsync("likesCount", likesCount);
+        return true;
+    }
+
+    var like = new Dictionary<string, object>
+    {
+        { "postId", dto.PostId },
+        { "userId", dto.UserId },
+        { "fechaCreacion", Timestamp.GetCurrentTimestamp() }
+    };
+
+    await _firestore.Collection("likes").AddAsync(like);
+    await postRef.UpdateAsync("likesCount", likesCount + 1);
+
+    return true;
+}
+
+public async Task<List<string>> ObtenerPostsConLikePorUsuarioAsync(string userId)
+{
+    var snapshot = await _firestore.Collection("likes")
+        .WhereEqualTo("userId", userId)
+        .GetSnapshotAsync();
+
+    var likedPostIds = new List<string>();
+
+    foreach (var document in snapshot.Documents)
+    {
+        var data = document.ToDictionary();
+
+        if (data.ContainsKey("postId"))
+        {
+            var postId = data["postId"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(postId))
             {
-                var data = document.ToDictionary();
-
-                string fechaTexto = string.Empty;
-
-                if (data.ContainsKey("fechaCreacion") && data["fechaCreacion"] is Timestamp timestamp)
-                {
-                    fechaTexto = timestamp.ToDateTime().ToString("yyyy-MM-dd HH:mm");
-                }
-
-                posts.Add(new PostDto
-                {
-                    Id = document.Id,
-                    UserId = data.ContainsKey("userId") ? data["userId"]?.ToString() ?? string.Empty : string.Empty,
-                    Nombre = data.ContainsKey("nombre") ? data["nombre"]?.ToString() ?? string.Empty : string.Empty,
-                    Apellido = data.ContainsKey("apellido") ? data["apellido"]?.ToString() ?? string.Empty : string.Empty,
-                    Contenido = data.ContainsKey("contenido") ? data["contenido"]?.ToString() ?? string.Empty : string.Empty,
-                    FechaCreacion = fechaTexto
-                });
+                likedPostIds.Add(postId);
             }
-
-            return posts;
         }
     }
+
+    return likedPostIds;
+}
+
+    }
+    
 }
