@@ -8,5 +8,7 @@ namespace RedSocialApi.Models
         public string Email { get; set; } = string.Empty;
         public string Carrera { get; set; } = string.Empty;
         public string FotoPerfilUrl { get; set; } = string.Empty;
+        public List<string> StudyGroupIds { get; set; } = new();
+        public List<string> StudyGroupNames { get; set; } = new();
     }
 }

@@ -16,18 +16,26 @@ namespace RedSocialApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearPost([FromBody] PostCrearDto dto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CrearPost([FromForm] PostCrearFormDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.UserId) || string.IsNullOrWhiteSpace(dto.Contenido))
+            var hasFiles = dto.Archivos?.Count > 0;
+
+            if (string.IsNullOrWhiteSpace(dto.UserId) || (!hasFiles && string.IsNullOrWhiteSpace(dto.Contenido)))
             {
                 return BadRequest(new
                 {
                     success = false,
-                    message = "UserId y contenido son requeridos"
+                    message = "UserId y contenido o archivos son requeridos"
                 });
             }
 
-            var creado = await _firebaseService.CrearPostAsync(dto);
+            var creado = await _firebaseService.CrearPostAsync(new PostCrearDto
+            {
+                UserId = dto.UserId,
+                Contenido = dto.Contenido,
+                Archivos = dto.Archivos
+            });
 
             if (!creado)
             {
@@ -63,14 +71,16 @@ namespace RedSocialApi.Controllers
         }
 
         [HttpDelete("{postId}")]
-        public async Task<IActionResult> EliminarPost(string postId, [FromBody] EliminarRecursoDto dto)
+        public async Task<IActionResult> EliminarPost(string postId, [FromQuery] string? userId, [FromBody] EliminarRecursoDto? dto)
         {
-            if (string.IsNullOrWhiteSpace(postId) || string.IsNullOrWhiteSpace(dto.UserId))
+            var resolvedUserId = !string.IsNullOrWhiteSpace(userId) ? userId : dto?.UserId;
+
+            if (string.IsNullOrWhiteSpace(postId) || string.IsNullOrWhiteSpace(resolvedUserId))
             {
                 return BadRequest(new { success = false, message = "postId y userId son requeridos" });
             }
 
-            var eliminado = await _firebaseService.EliminarPostAsync(postId, dto.UserId);
+            var eliminado = await _firebaseService.EliminarPostAsync(postId, resolvedUserId);
             if (!eliminado)
             {
                 return BadRequest(new { success = false, message = "No se pudo eliminar el post" });
@@ -83,12 +93,35 @@ namespace RedSocialApi.Controllers
         public async Task<IActionResult> ObtenerPosts()
         {
             var posts = await _firebaseService.ObtenerPostsAsync();
+            var normalizedPosts = posts.Select(post =>
+            {
+                post.FotoPerfilUrl = NormalizeUrl(post.FotoPerfilUrl);
+                post.Media = post.Media.Select(media => new PostMediaDto
+                {
+                    Url = NormalizeUrl(media.Url),
+                    Tipo = media.Tipo
+                }).ToList();
+
+                return post;
+            }).ToList();
 
             return Ok(new
             {
                 success = true,
-                data = posts
+                data = normalizedPosts
             });
+        }
+
+        private string NormalizeUrl(string? url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return string.Empty;
+            }
+
+            return url.StartsWith("/")
+                ? $"{Request.Scheme}://{Request.Host}{url}"
+                : url;
         }
     }
 }

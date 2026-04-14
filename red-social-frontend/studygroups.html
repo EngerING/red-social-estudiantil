@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect | Study Groups</title>
+  <link rel="stylesheet" href="css/studygroups.css" />
+</head>
+<body>
+  <div class="groups-shell">
+    <aside class="groups-sidebar">
+      <div class="brand-section">
+        <div class="brand-icon">🎓</div>
+        <h1>CampusConnect</h1>
+      </div>
+
+      <nav class="groups-menu">
+        <button class="menu-btn" type="button" data-link="feed.html">Home Feed</button>
+        <button class="menu-btn active" type="button" data-link="studygroups.html">Study Group Finder</button>
+        <button class="menu-btn" type="button" data-link="profile.html">Student Profile</button>
+      </nav>
+    </aside>
+
+    <main class="groups-content">
+      <section class="groups-hero">
+        <div>
+          <p class="eyebrow">Encuentra tu tribu académica</p>
+          <h2>Study Group Finder</h2>
+          <p class="hero-copy">Explora temáticas, mira cuántas personas ya están dentro y únete al grupo que mejor encaje contigo.</p>
+        </div>
+        <div class="hero-chip">
+          <strong id="joinedGroupsCount">0</strong>
+          <span>grupos unidos</span>
+        </div>
+      </section>
+
+      <section class="groups-layout">
+        <div class="groups-list-panel">
+          <div class="panel-header">
+            <h3>Temáticas</h3>
+            <p>Selecciona un grupo y entra a su chat privado.</p>
+          </div>
+
+          <div id="studyGroupsContainer" class="groups-grid"></div>
+        </div>
+
+        <div class="group-chat-panel">
+          <div class="group-chat-header">
+            <div>
+              <h3 id="selectedGroupName">Selecciona un grupo</h3>
+              <p id="selectedGroupDescription">Elige una temática para ver su chat exclusivo.</p>
+            </div>
+            <span id="selectedGroupMeta" class="chat-meta">0 miembros</span>
+          </div>
+
+          <p id="groupStatus" class="group-status">Debes unirte a un grupo para participar en su chat.</p>
+          <div id="groupMessages" class="group-messages"></div>
+
+          <div class="group-chat-input">
+            <input id="groupChatInput" type="text" placeholder="Escribe a tu grupo..." />
+            <button id="btnSendGroupMessage" type="button">Enviar</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+  <script src="js/studygroups.js"></script>
+</body>
+</html>

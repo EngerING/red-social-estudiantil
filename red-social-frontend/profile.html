@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusConnect | Perfil</title>
+  <link rel="stylesheet" href="css/profile.css" />
+</head>
+<body>
+  <div class="profile-shell">
+    <aside class="profile-sidebar">
+      <div class="brand-section">
+        <div class="brand-icon">🎓</div>
+        <h1>CampusConnect</h1>
+      </div>
+
+      <nav class="profile-menu">
+        <button class="menu-btn" type="button" data-link="feed.html">Home Feed</button>
+        <button class="menu-btn" type="button" data-link="studygroups.html">Study Group Finder</button>
+        <button class="menu-btn active" type="button" data-link="profile.html">Student Profile</button>
+      </nav>
+    </aside>
+
+    <main class="profile-content">
+      <section class="profile-hero">
+        <div class="profile-avatar-wrap">
+          <img id="fotoPerfil" class="profile-avatar" src="https://via.placeholder.com/180?text=👤" alt="Foto de perfil" />
+          <span class="profile-badge">Campus</span>
+        </div>
+
+        <div class="profile-main">
+          <div class="profile-headline">
+            <div>
+              <h2 id="nombreUsuario">Cargando...</h2>
+              <p id="usuarioHandle" class="profile-handle">@campusconnect</p>
+            </div>
+            <div class="profile-actions">
+              <button id="btnCambiarFoto" class="action-btn primary-action" type="button">Cambiar foto</button>
+              <button id="btnLogout" class="action-btn ghost-action" type="button">Cerrar sesión</button>
+            </div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="stat-card">
+              <strong id="statsPosts">0</strong>
+              <span>publicaciones</span>
+            </div>
+            <div class="stat-card">
+              <strong id="statsCarrera">-</strong>
+              <span>carrera</span>
+            </div>
+            <div class="stat-card">
+              <strong id="statsCuenta">Activa</strong>
+              <span>cuenta</span>
+            </div>
+          </div>
+
+          <div class="profile-bio-card">
+            <p id="correoUsuario" class="profile-email">Cargando correo...</p>
+            <p id="carreraUsuario" class="profile-bio">Cargando carrera...</p>
+
+            <div class="profile-groups-block">
+              <h3>Mis grupos de estudio</h3>
+              <div id="profileGroups" class="profile-groups-list">
+                <span class="group-pill muted-pill">Cargando grupos...</span>
+              </div>
+            </div>
+
+            <div class="profile-upload-row">
+              <input id="fotoInput" type="file" accept="image/*" />
+              <span id="fotoSeleccionada" class="selected-file-label">Ningún archivo seleccionado</span>
+              <button id="btnSubirFoto" class="action-btn primary-action" type="button">Actualizar foto</button>
+            </div>
+
+            <p id="profileMessage" class="profile-message"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="profile-posts-section">
+        <div class="section-header">
+          <h3>Mis publicaciones</h3>
+          <p>Tu espacio personal al estilo CampusConnect.</p>
+        </div>
+
+        <div id="misPostsContainer" class="profile-posts-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/profile.js"></script>
+</body>
+</html>

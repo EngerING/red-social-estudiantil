@@ -34,10 +34,12 @@ async function loginUser(e) {
       body: JSON.stringify(payload)
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      message.textContent = data.message || "No se pudo iniciar sesión";
+      message.textContent = response.status === 401
+        ? "Credenciales incorrectas"
+        : data.message || "No se pudo iniciar sesión";
       message.className = "message error";
       return;
     }
@@ -82,7 +84,7 @@ async function registerUser(e) {
       body: JSON.stringify(payload)
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
       message.textContent = data.message || "No se pudo crear la cuenta";

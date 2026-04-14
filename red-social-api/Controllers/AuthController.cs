@@ -86,6 +86,8 @@ namespace RedSocialApi.Controllers
                 });
             }
 
+            perfil.FotoPerfilUrl = NormalizePhotoUrl(perfil.FotoPerfilUrl);
+
             return Ok(new
             {
                 success = true,
@@ -94,20 +96,46 @@ namespace RedSocialApi.Controllers
         }
 
         [HttpPost("profile/{userId}/photo")]
-        public async Task<IActionResult> UploadPhoto(string userId, IFormFile foto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadPhoto(string userId, [FromForm] UploadProfilePhotoDto request)
         {
-            if (string.IsNullOrWhiteSpace(userId) || foto is null)
+            if (string.IsNullOrWhiteSpace(userId) || request.Foto is null)
             {
                 return BadRequest(new { success = false, message = "userId y foto son requeridos" });
             }
 
-            var url = await _firebaseService.ActualizarFotoPerfilAsync(userId, foto);
+            try
+            {
+                var url = await _firebaseService.ActualizarFotoPerfilAsync(userId, request.Foto);
+                if (string.IsNullOrWhiteSpace(url))
+                {
+                    return BadRequest(new { success = false, message = "No se pudo actualizar la foto" });
+                }
+
+                var fotoPerfilUrl = NormalizePhotoUrl(url);
+
+                return Ok(new { success = true, message = "Foto actualizada", fotoPerfilUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = $"Error al actualizar la foto: {ex.Message}"
+                });
+            }
+        }
+
+        private string NormalizePhotoUrl(string? url)
+        {
             if (string.IsNullOrWhiteSpace(url))
             {
-                return BadRequest(new { success = false, message = "No se pudo actualizar la foto" });
+                return string.Empty;
             }
 
-            return Ok(new { success = true, message = "Foto actualizada", fotoPerfilUrl = url });
+            return url.StartsWith("/")
+                ? $"{Request.Scheme}://{Request.Host}{url}"
+                : url;
         }
     }
 }

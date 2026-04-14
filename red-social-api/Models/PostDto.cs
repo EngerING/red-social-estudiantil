@@ -6,8 +6,10 @@ namespace RedSocialApi.Models
         public string UserId { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
         public string Apellido { get; set; } = string.Empty;
+        public string FotoPerfilUrl { get; set; } = string.Empty;
         public string Contenido { get; set; } = string.Empty;
         public string FechaCreacion { get; set; } = string.Empty;
         public int LikesCount { get; set; }
+        public List<PostMediaDto> Media { get; set; } = new();
     }
 }

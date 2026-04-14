@@ -107,14 +107,16 @@ namespace RedSocialApi.Controllers
         }
 
         [HttpDelete("comment/{comentarioId}")]
-        public async Task<IActionResult> EliminarComentario(string comentarioId, [FromBody] EliminarRecursoDto dto)
+        public async Task<IActionResult> EliminarComentario(string comentarioId, [FromQuery] string? userId, [FromBody] EliminarRecursoDto? dto)
         {
-            if (string.IsNullOrWhiteSpace(comentarioId) || string.IsNullOrWhiteSpace(dto.UserId))
+            var resolvedUserId = !string.IsNullOrWhiteSpace(userId) ? userId : dto?.UserId;
+
+            if (string.IsNullOrWhiteSpace(comentarioId) || string.IsNullOrWhiteSpace(resolvedUserId))
             {
                 return BadRequest(new { success = false, message = "comentarioId y userId son requeridos" });
             }
 
-            var eliminado = await _firebaseService.EliminarComentarioAsync(comentarioId, dto.UserId);
+            var eliminado = await _firebaseService.EliminarComentarioAsync(comentarioId, resolvedUserId);
             if (!eliminado)
             {
                 return BadRequest(new { success = false, message = "No se pudo eliminar el comentario" });

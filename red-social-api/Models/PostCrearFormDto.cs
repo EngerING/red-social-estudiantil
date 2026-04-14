@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace RedSocialApi.Models
 {
-    public class PostCrearDto
+    public class PostCrearFormDto
     {
         public string UserId { get; set; } = string.Empty;
         public string Contenido { get; set; } = string.Empty;
