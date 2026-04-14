@@ -89,6 +89,40 @@ namespace RedSocialApi.Controllers
             });
         }
 
+        [HttpPut("comment/{comentarioId}")]
+        public async Task<IActionResult> EditarComentario(string comentarioId, [FromBody] ActualizarComentarioDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(comentarioId) || string.IsNullOrWhiteSpace(dto.UserId) || string.IsNullOrWhiteSpace(dto.Contenido))
+            {
+                return BadRequest(new { success = false, message = "comentarioId, userId y contenido son requeridos" });
+            }
+
+            var actualizado = await _firebaseService.ActualizarComentarioAsync(comentarioId, dto);
+            if (!actualizado)
+            {
+                return BadRequest(new { success = false, message = "No se pudo editar el comentario" });
+            }
+
+            return Ok(new { success = true, message = "Comentario editado correctamente" });
+        }
+
+        [HttpDelete("comment/{comentarioId}")]
+        public async Task<IActionResult> EliminarComentario(string comentarioId, [FromBody] EliminarRecursoDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(comentarioId) || string.IsNullOrWhiteSpace(dto.UserId))
+            {
+                return BadRequest(new { success = false, message = "comentarioId y userId son requeridos" });
+            }
+
+            var eliminado = await _firebaseService.EliminarComentarioAsync(comentarioId, dto.UserId);
+            if (!eliminado)
+            {
+                return BadRequest(new { success = false, message = "No se pudo eliminar el comentario" });
+            }
+
+            return Ok(new { success = true, message = "Comentario eliminado correctamente" });
+        }
+
         [HttpGet("comments/{postId}")]
         public async Task<IActionResult> ObtenerComentarios(string postId)
         {
@@ -99,6 +133,13 @@ namespace RedSocialApi.Controllers
                 success = true,
                 data = comentarios
             });
+        }
+
+        [HttpGet("chat/messages")]
+        public async Task<IActionResult> ObtenerMensajesChat()
+        {
+            var mensajes = await _firebaseService.ObtenerMensajesChatAsync();
+            return Ok(new { success = true, data = mensajes });
         }
     }
 }

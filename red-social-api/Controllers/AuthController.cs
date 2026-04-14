@@ -92,5 +92,22 @@ namespace RedSocialApi.Controllers
                 data = perfil
             });
         }
+
+        [HttpPost("profile/{userId}/photo")]
+        public async Task<IActionResult> UploadPhoto(string userId, IFormFile foto)
+        {
+            if (string.IsNullOrWhiteSpace(userId) || foto is null)
+            {
+                return BadRequest(new { success = false, message = "userId y foto son requeridos" });
+            }
+
+            var url = await _firebaseService.ActualizarFotoPerfilAsync(userId, foto);
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return BadRequest(new { success = false, message = "No se pudo actualizar la foto" });
+            }
+
+            return Ok(new { success = true, message = "Foto actualizada", fotoPerfilUrl = url });
+        }
     }
 }

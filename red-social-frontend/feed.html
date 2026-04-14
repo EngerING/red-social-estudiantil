@@ -27,34 +27,19 @@
     </aside>
 
     <main class="content">
-     <section class="top-section">
-  <h2 class="section-title">Home Feed</h2>
+      <section class="top-section">
+        <h2 class="section-title">Home Feed</h2>
 
-  <article class="create-post-card">
-    <h3>Crear publicación</h3>
-    <textarea id="postContenido" placeholder="¿Qué estás pensando?"></textarea>
-    <button id="btnCrearPost" class="post-btn">Publicar</button>
-    <p id="postMessage" class="post-message"></p>
-  </article>
-
-  <section class="posts-section">
-    <div id="postsContainer"></div>
-  </section>
-</section>
-
-      <section class="groups-section">
-        <h2 class="section-title">Study Group Finder</h2>
-
-        <div class="chips-row">
-          <span class="chip">Math</span>
-          <span class="chip">Tech</span>
-          <span class="chip">Art</span>
-        </div>
-
-        <article class="wide-card">
-          <h3>Join the Calculus Study Group</h3>
-          <p>Connect with peers to tackle calculus challenges together.</p>
+        <article class="create-post-card">
+          <h3>Crear publicación</h3>
+          <textarea id="postContenido" placeholder="¿Qué estás pensando?"></textarea>
+          <button id="btnCrearPost" class="post-btn">Publicar</button>
+          <p id="postMessage" class="post-message"></p>
         </article>
+
+        <section class="posts-section">
+          <div id="postsContainer"></div>
+        </section>
       </section>
 
       <section class="profile-section">
@@ -62,52 +47,41 @@
 
         <article class="profile-card">
           <div class="profile-header">
+            <img id="fotoPerfil" class="avatar" src="https://via.placeholder.com/90?text=👤" alt="Foto de perfil" />
             <div>
               <h3 id="nombreUsuario">Cargando...</h3>
               <p id="correoUsuario">Cargando correo...</p>
             </div>
           </div>
 
+          <div class="profile-photo-upload">
+            <input id="fotoInput" type="file" accept="image/*" />
+            <button id="btnSubirFoto" class="post-btn" type="button">Actualizar foto</button>
+          </div>
+
           <div class="profile-block">
             <h4>Carrera</h4>
             <p id="carreraUsuario">Cargando carrera...</p>
-          </div>
-
-          <div class="profile-block">
-            <h4>Skills</h4>
-            <ul>
-              <li>Programming</li>
-              <li>Data Analysis</li>
-              <li>Graphic Design</li>
-            </ul>
-          </div>
-
-          <div class="profile-block">
-            <h4>Enrolled Courses</h4>
-            <ul>
-              <li>Calculus I</li>
-              <li>Introduction to Computer Science</li>
-              <li>Art History</li>
-            </ul>
           </div>
         </article>
       </section>
 
       <section class="messages-section">
-        <h2 class="section-title">Messages</h2>
+        <h2 class="section-title">Chat en tiempo real</h2>
 
-        <article class="message-card">
-          <div>
-            <h3>Project Collaboration</h3>
-            <p>Alice Johnson</p>
+        <article class="chat-card">
+          <div id="chatMessages" class="chat-messages"></div>
+
+          <div class="chat-input-row">
+            <input id="chatInput" type="text" placeholder="Escribe un mensaje..." />
+            <button id="btnSendChat" class="chat-btn" type="button">Enviar</button>
           </div>
-
-          <button class="chat-btn">Chat</button>
         </article>
       </section>
     </main>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
   <script src="js/feed.js"></script>
 </body>
 </html>
